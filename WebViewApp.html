@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebView Bridge Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+    #log {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      height: 120px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h2>WebView ↔ Native Bridge</h2>
+
+  <label>Enter number:</label>
+  <input type="number" id="numberInput" step="0.01" />
+  <button onclick="sendNumber()">Send to Native</button>
+
+  <div id="log"></div>
+
+  <script>
+    // Utility to log messages on page
+    function log(msg) {
+      const logEl = document.getElementById("log");
+      logEl.innerHTML += msg + "<br/>";
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // Function that sends a double to native
+    function sendNumber() {
+      const val = parseFloat(document.getElementById("numberInput").value);
+      if (isNaN(val)) {
+        log("⚠️ Please enter a valid number.");
+        return;
+      }
+      log("➡️ Sending to native: " + val);
+      if (window.AndroidBridge && window.AndroidBridge.onNumberReceived) {
+        window.AndroidBridge.onNumberReceived(val);
+      } else {
+        log("❌ No AndroidBridge found");
+      }
+    }
+
+    // Function exposed to native to receive numbers back
+    function fromNative(number) {
+      log("⬅️ Received from native: " + number);
+    }
+
+    // Example: simulate native calling back after 2 sec
+    setTimeout(() => {
+      log("Simulating native calling back with value 42.42...");
+      fromNative(42.42);
+    }, 2000);
+  </script>
+</body>
+</html>
