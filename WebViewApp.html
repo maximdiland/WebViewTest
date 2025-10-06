@@ -31,6 +31,7 @@
   <input type="number" id="numberInput" step="0.01" />
   <button onclick="sendNumber()">Send to Native</button>
   <button onclick="navigateBack()">Navigate back</button>
+  <button onclick="openFundsManagement()">Open Funds Management</button>
 
   <div id="log"></div>
 
@@ -69,6 +70,16 @@
         window.NativeApp.navigateBack();
       } else {
         log("❌ No NativeApp.navigateBack found");
+      }
+    }
+
+    // Function to open funds management using native bridge
+    function openFundsManagement() {
+      log("➡️ Calling native navigate() to funds management");
+      if (window.NativeApp && window.NativeApp.navigate) {
+        window.NativeApp.navigate("funds_management", {});
+      } else {
+        log("❌ No NativeApp.navigate found");
       }
     }
 
