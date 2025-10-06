@@ -49,8 +49,8 @@
         return;
       }
       log("➡️ Sending to native: " + val);
-      if (window.AndroidBridge && window.AndroidBridge.onNumberReceived) {
-        window.AndroidBridge.onNumberReceived(val);
+      if (window.AndroidBridge && window.AndroidBridge.call) {
+        window.AndroidBridge.call(val);
       } else {
         log("❌ No AndroidBridge found");
       }
