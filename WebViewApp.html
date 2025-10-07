@@ -115,10 +115,12 @@
         const uuid = "pm-buysell-" + Date.now();
 
         // Call the native method
-        window.NativeApp.networkRequest(
-            uuid,
-            JSON.stringify(networkRequest)
-        );
+        //window.NativeApp.networkRequest(
+        //    uuid,
+        //    JSON.stringify(networkRequest)
+        //);
+
+        window.NativeApp.networkRequest("uuid", "body");
       } else {
         log("❌ No NativeApp.networkRequest found");
       }
