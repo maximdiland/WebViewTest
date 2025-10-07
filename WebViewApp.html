@@ -32,6 +32,7 @@
   <button onclick="sendNumber()">Send to Native</button>
   <button onclick="navigateBack()">Navigate back</button>
   <button onclick="openFundsManagement()">Open Funds Management</button>
+  <button onclick="getPMBuySellInfo()">Get PM BuySellInfo</button>
 
   <div id="log"></div>
 
@@ -88,6 +89,37 @@
       log("Simulating native calling back with value 42.42...");
       fromNative(42.42);
     }, 2000);
+
+
+    // Function to get PM BuySellInfo using native bridge
+    function getPMBuySellInfo() {
+      log("➡️ Calling native networkRequest() for PM BuySellInfo");
+
+      if (window.NativeApp && window.NativeApp.networkRequest) {
+        // Create the request body
+        const requestBody = {
+          InstrumentId: "kalshi_264380",
+          Side: "Yes"
+        };
+
+        // Create the NetworkRequest object
+        const networkRequest = {
+          isGateway: true,
+          method: "POST",
+          path: "kalshi/PredictionMarkets/PlaceOrderInfo",
+          headers: {},
+          body: JSON.stringify(requestBody)
+        };
+
+        // Generate a UUID for the request
+        const uuid = "pm-buysell-" + Date.now();
+
+        // Call the native method
+        window.NativeApp.networkRequest(uuid, networkRequest);
+      } else {
+        log("❌ No NativeApp.networkRequest found");
+      }
+    }
   </script>
 </body>
 </html>
