@@ -108,14 +108,17 @@
           method: "POST",
           path: "kalshi/PredictionMarkets/PlaceOrderInfo",
           headers: {},
-          body: JSON.stringify(requestBody)
+          body: requestBody
         };
 
         // Generate a UUID for the request
         const uuid = "pm-buysell-" + Date.now();
 
         // Call the native method
-        window.NativeApp.networkRequest(uuid, networkRequest);
+        window.NativeApp.networkRequest(
+            uuid,
+            JSON.stringify(networkRequest)
+        );
       } else {
         log("❌ No NativeApp.networkRequest found");
       }
