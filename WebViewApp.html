@@ -52,10 +52,11 @@
         return;
       }
       log("➡️ Sending to native: " + val);
-      if (window.AndroidBridge && window.AndroidBridge.call) {
-        window.AndroidBridge.call(val);
+      if (window.NativeApp && window.NativeApp.runCommand) {
+        // For now, just sending the number as a simple string since we don't have a specific Command for it
+        window.NativeApp.runCommand(val.toString());
       } else {
-        log("❌ No AndroidBridge found");
+        log("❌ No NativeApp.runCommand found");
       }
     }
 
@@ -67,20 +68,28 @@
     // Function to navigate back using native bridge
     function navigateBack() {
       log("➡️ Calling native navigateBack()");
-      if (window.NativeApp && window.NativeApp.navigateBack) {
-        window.NativeApp.navigateBack();
+      if (window.NativeApp && window.NativeApp.runCommand) {
+        const navigateBackCommand = {
+          "type": "NavigateBack"
+        };
+        window.NativeApp.runCommand(JSON.stringify(navigateBackCommand));
       } else {
-        log("❌ No NativeApp.navigateBack found");
+        log("❌ No NativeApp.runCommand found");
       }
     }
 
     // Function to open funds management using native bridge
     function openFundsManagement() {
       log("➡️ Calling native navigate() to funds management");
-      if (window.NativeApp && window.NativeApp.navigate) {
-        window.NativeApp.navigate("funds_management", {});
+      if (window.NativeApp && window.NativeApp.runCommand) {
+        const navigateToCommand = {
+          "type": "NavigateTo",
+          "destination": "funds_management",
+          "arguments": {}
+        };
+        window.NativeApp.runCommand(JSON.stringify(navigateToCommand));
       } else {
-        log("❌ No NativeApp.navigate found");
+        log("❌ No NativeApp.runCommand found");
       }
     }
 
@@ -93,32 +102,40 @@
 
     // Function to get PM BuySellInfo using native bridge
     function getPMBuySellInfo() {
-      log("➡️ Calling native networkRequest() for PM BuySellInfo");
+      log("➡️ Calling native asyncCall() for PM BuySellInfo");
 
-      if (window.NativeApp && window.NativeApp.networkRequest) {
+      if (window.NativeApp && window.NativeApp.asyncCall) {
         // Create the request body
         const requestBody = {
           InstrumentId: "kalshi_264380",
           Side: "Yes"
         };
 
-        // Create the NetworkRequest object
-        const networkRequest = {
-          isGateway: true,
-          method: "POST",
-          path: "kalshi/PredictionMarkets/PlaceOrderInfo",
-          headers: {},
-          body: JSON.stringify(requestBody)
+        // Create the GatewayHttpRequest object
+        const gatewayRequest = {
+          "type": "Requestable",
+          "method": "POST",
+          "path": "kalshi/PredictionMarkets/PlaceOrderInfo",
+          "headers": {},
+          "body": JSON.stringify(requestBody)
         };
 
         // Generate a UUID for the request
-        const uuid = "pm-buysell-" + Date.now();
+        const uuid = generateUUID();
 
         // Call the native method
-        window.NativeApp.networkRequest("uuid", JSON.stringify(networkRequest));
+        window.NativeApp.asyncCall(uuid, JSON.stringify(gatewayRequest));
       } else {
-        log("❌ No NativeApp.networkRequest found");
+        log("❌ No NativeApp.asyncCall found");
       }
+    }
+
+    // Utility function to generate UUID
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
     }
   </script>
 </body>
