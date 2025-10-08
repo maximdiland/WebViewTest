@@ -33,6 +33,7 @@
   <button onclick="navigateBack()">Navigate back</button>
   <button onclick="openFundsManagement()">Open Funds Management</button>
   <button onclick="getPMBuySellInfo()">Get PM BuySellInfo</button>
+  <button onclick="getNativeAppName()">Get native app name</button>
 
   <div id="log"></div>
 
@@ -127,6 +128,22 @@
         window.NativeApp.asyncCall(uuid, JSON.stringify(gatewayRequest));
       } else {
         log("❌ No NativeApp.asyncCall found");
+      }
+    }
+
+    // Function to get the native app name
+    function getNativeAppName() {
+      log("➡️ Calling native runCall() for app name");
+
+      if (window.NativeApp && window.NativeApp.runCall) {
+        const request = {
+          "type": "AppName"
+        };
+
+        const result = window.NativeApp.runCall(JSON.stringify(request));
+        log("⬅️ App name result: " + result);
+      } else {
+        log("❌ No NativeApp.runCall found");
       }
     }
 
