@@ -53,59 +53,58 @@
         return;
       }
       log("➡️ Sending to native: " + val);
-      if (window.NativeApp && window.NativeApp.runCommand) {
-        // For now, just sending the number as a simple string since we don't have a specific Command for it
-        window.NativeApp.runCommand(val.toString());
+      if (window.NativeApp && window.NativeApp.runNative) {
+        window.NativeApp.runNative(val.toString());
       } else {
-        log("❌ No NativeApp.runCommand found");
+        log("❌ No NativeApp.runNative found");
       }
     }
 
     // Function exposed to native to receive numbers back
-    function fromNative(number) {
+    function runWeb(number) {
       log("⬅️ Received from native: " + number);
     }
 
     // Function to navigate back using native bridge
     function navigateBack() {
       log("➡️ Calling native navigateBack()");
-      if (window.NativeApp && window.NativeApp.runCommand) {
+      if (window.NativeApp && window.NativeApp.runNative) {
         const navigateBackCommand = {
           "type": "NavigateBack"
         };
-        window.NativeApp.runCommand(JSON.stringify(navigateBackCommand));
+        window.NativeApp.runNative(JSON.stringify(navigateBackCommand));
       } else {
-        log("❌ No NativeApp.runCommand found");
+        log("❌ No NativeApp.runNative found");
       }
     }
 
     // Function to open funds management using native bridge
     function openFundsManagement() {
       log("➡️ Calling native navigate() to funds management");
-      if (window.NativeApp && window.NativeApp.runCommand) {
+      if (window.NativeApp && window.NativeApp.runNative) {
         const navigateToCommand = {
           "type": "NavigateTo",
           "destination": "funds_management",
           "arguments": {}
         };
-        window.NativeApp.runCommand(JSON.stringify(navigateToCommand));
+        window.NativeApp.runNative(JSON.stringify(navigateToCommand));
       } else {
-        log("❌ No NativeApp.runCommand found");
+        log("❌ No NativeApp.runNative found");
       }
     }
 
     // Example: simulate native calling back after 2 sec
     setTimeout(() => {
       log("Simulating native calling back with value 42.42...");
-      fromNative(42.42);
+      runWeb(42.42);
     }, 2000);
 
 
     // Function to get PM BuySellInfo using native bridge
     function getPMBuySellInfo() {
-      log("➡️ Calling native asyncCall() for PM BuySellInfo");
+      log("➡️ Calling native asyncCallNative() for PM BuySellInfo");
 
-      if (window.NativeApp && window.NativeApp.asyncCall) {
+      if (window.NativeApp && window.NativeApp.asyncCallNative) {
         // Create the request body
         const requestBody = {
           InstrumentId: "kalshi_264380",
@@ -125,25 +124,25 @@
         const uuid = generateUUID();
 
         // Call the native method
-        window.NativeApp.asyncCall(uuid, JSON.stringify(gatewayRequest));
+        window.NativeApp.asyncCallNative(uuid, JSON.stringify(gatewayRequest));
       } else {
-        log("❌ No NativeApp.asyncCall found");
+        log("❌ No NativeApp.asyncCallNative found");
       }
     }
 
     // Function to get the native app name
     function getNativeAppName() {
-      log("➡️ Calling native runCall() for app name");
+      log("➡️ Calling native callNative() for app name");
 
-      if (window.NativeApp && window.NativeApp.runCall) {
+      if (window.NativeApp && window.NativeApp.callNative) {
         const request = {
           "type": "AppName"
         };
 
-        const result = window.NativeApp.runCall(JSON.stringify(request));
+        const result = window.NativeApp.callNative(JSON.stringify(request));
         log("⬅️ App name result: " + result);
       } else {
-        log("❌ No NativeApp.runCall found");
+        log("❌ No NativeApp.callNative found");
       }
     }
 
